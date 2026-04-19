@@ -1,0 +1,43 @@
+# Data files (large, not for git)
+data/nhanes/*.XPT
+data/nhanes/*.xpt
+data/nhanes/*.xpt.xz
+data/nhanes/*.csv
+data/nhanes_participants.parquet
+data/nhanes_participants.csv
+data/accel_csv/
+/Wearables_Epigenetics_Wellbeing.pdf
+/prd.md
+
+# Virtual environment
+wearable-age/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML artifacts
+*.gguf
+*.bin
+*.safetensors
+chroma_db*/
+models/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+.claude
+
+# Secrets
+.env
+*.key
