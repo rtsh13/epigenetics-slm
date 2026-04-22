@@ -5,9 +5,16 @@ data/nhanes/*.xpt.xz
 data/nhanes/*.csv
 data/nhanes_participants.parquet
 data/nhanes_participants.csv
+data/nhanes_features.parquet
+data/nhanes_features.csv
+data/feature_checkpoint.json
 data/accel_csv/
 /Wearables_Epigenetics_Wellbeing.pdf
 /prd.md
+
+# Generated outputs
+reports/
+progress/
 
 # Virtual environment
 wearable-age/
