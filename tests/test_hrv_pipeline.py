@@ -55,7 +55,7 @@ class TestProcessEcgSegment:
 
         result = process_ecg_segment(make_ecg(heart_rate=60), sampling_rate=1000)
         assert result["hrv_mean_hr"] is not None
-        assert abs(result["hrv_mean_hr"] - 60) < 15, f"Mean HR={result['hrv_mean_hr']}"
+        assert abs(result["hrv_mean_hr"] - 60) < 5, f"Mean HR={result['hrv_mean_hr']}"
 
     def test_returns_none_for_signal_under_60s(self):
         from src.hrv_pipeline import process_ecg_segment
@@ -151,7 +151,8 @@ class TestLoadSubjectMetadata:
         from src.autonomic_aging_processor import load_subject_metadata
 
         csv_file = tmp_path / "subject-info.csv"
-        csv_file.write_text("subject_id,age,gender,bmi\n001,35,Male,24.5\n002,62,Female,27.1\n")
+        # Use non-normalised column names to exercise the lowercasing/hyphen transform
+        csv_file.write_text("Subject-ID,Age,Gender,BMI\n001,35,Male,24.5\n002,62,Female,27.1\n")
 
         df = load_subject_metadata(str(csv_file))
         assert list(df.columns) == ["subject_id", "age", "gender", "bmi"]
