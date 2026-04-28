@@ -166,15 +166,10 @@ def batch_process(
             log.warning("Could not load checkpoint: %s", exc)
             results = []
 
-    processed_stems = {Path(r["subject_id"]).stem if "/" in r.get("subject_id", "") else r.get("subject_id", "") for r in results}
-    # Also track by record path stem for robust deduplication
-    processed_stems_from_paths: set = set()
-    for rec in results:
-        sid = rec.get("subject_id", "")
-        processed_stems_from_paths.add(sid)
+    processed_ids: set[str] = {r.get("subject_id", "") for r in results}
 
     # Filter out already-processed records
-    remaining = [p for p in record_paths if Path(p).stem not in processed_stems_from_paths]
+    remaining = [p for p in record_paths if Path(p).stem not in processed_ids]
 
     log.info(
         "Total records: %d | Already processed: %d | Remaining: %d",
@@ -194,6 +189,11 @@ def batch_process(
             checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
             _save_checkpoint(results, checkpoint_path)
             log.info("Checkpoint saved at %d participants processed.", i + 1)
+
+    # Save final checkpoint (covers last partial batch not caught by the every-100 save)
+    if remaining:
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        _save_checkpoint(results, checkpoint_path)
 
     return pd.DataFrame(results)
 
