@@ -27,7 +27,7 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
     Returns None if:
     - Duration < 60 seconds
     - Signal is flat (std < 1e-6)
-    - Fewer than 30 R-peaks detected
+    - Fewer than 30 R-peaks detected after physiological filtering
 
     Returns a dict with keys:
         hrv_rmssd, hrv_sdnn, hrv_pnn50, hrv_mean_rr, hrv_mean_hr,
@@ -57,19 +57,41 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
     if len(rpeaks) < 30:
         return None
 
-    # Manual RR-interval computations
+    # Issue 5: Filter ectopic/artefact beats — keep only 300–2000 ms (30–200 bpm)
     rr_ms = np.diff(rpeaks) / sampling_rate * 1000.0
-    mean_rr = float(np.mean(rr_ms))
-    mean_hr = float(60_000.0 / mean_rr)
+    valid_mask = (rr_ms >= 300) & (rr_ms <= 2000)
+    if valid_mask.sum() < 29:  # need ≥30 peaks → ≥29 intervals
+        return None
+    # Keep rpeaks where both adjacent RR intervals are valid
+    valid_rpeaks = rpeaks[
+        np.concatenate([[True], valid_mask]) & np.concatenate([valid_mask, [True]])
+    ]
+    if len(valid_rpeaks) < 30:
+        return None
+    rpeaks = valid_rpeaks
+    rr_ms = rr_ms[valid_mask]
 
-    # Time-domain HRV
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        hrv_time = nk.hrv_time(peaks_df, sampling_rate=sampling_rate)
+    # Issue 2: Guard against division by zero for mean_rr / mean_hr
+    mean_rr = float(np.mean(rr_ms)) if len(rr_ms) > 0 else None
+    mean_hr = float(60_000.0 / mean_rr) if (mean_rr is not None and mean_rr > 0) else None
 
-    hrv_rmssd = _safe_scalar(hrv_time, "HRV_RMSSD")
-    hrv_sdnn = _safe_scalar(hrv_time, "HRV_SDNN")
-    hrv_pnn50 = _safe_scalar(hrv_time, "HRV_pNN50")
+    # Issue 1: Pass rpeaks (indices array) rather than peaks_df to HRV functions.
+    # nk.hrv_time/frequency/nonlinear all accept R-peak sample indices directly, which
+    # is the unambiguous API per NeuroKit2 docs (verified equivalent on v0.2.13).
+
+    # Issue 4: Time-domain HRV — wrap in try/except, consistent with other branches
+    hrv_rmssd = None
+    hrv_sdnn = None
+    hrv_pnn50 = None
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            hrv_time = nk.hrv_time(rpeaks, sampling_rate=sampling_rate)
+        hrv_rmssd = _safe_scalar(hrv_time, "HRV_RMSSD")
+        hrv_sdnn = _safe_scalar(hrv_time, "HRV_SDNN")
+        hrv_pnn50 = _safe_scalar(hrv_time, "HRV_pNN50")
+    except Exception:
+        pass
 
     # Frequency-domain HRV (only if >= 120s)
     hrv_lf = None
@@ -82,7 +104,7 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 hrv_freq = nk.hrv_frequency(
-                    peaks_df, sampling_rate=sampling_rate, psd_method="welch"
+                    rpeaks, sampling_rate=sampling_rate, psd_method="welch"
                 )
             hrv_lf = _safe_scalar(hrv_freq, "HRV_LF")
             hrv_hf = _safe_scalar(hrv_freq, "HRV_HF")
@@ -99,7 +121,7 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            hrv_nonlinear = nk.hrv_nonlinear(peaks_df, sampling_rate=sampling_rate)
+            hrv_nonlinear = nk.hrv_nonlinear(rpeaks, sampling_rate=sampling_rate)
         hrv_sample_entropy = _safe_scalar(hrv_nonlinear, "HRV_SampEn")
         hrv_dfa_alpha1 = _safe_scalar(hrv_nonlinear, "HRV_DFA_alpha1")
         hrv_dfa_alpha2 = _safe_scalar(hrv_nonlinear, "HRV_DFA_alpha2")
@@ -188,7 +210,7 @@ def process_bp_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict | 
     Returns None if:
     - Duration < 60s
     - Signal is flat (std < 1e-6)
-    - Fewer than 10 systolic peaks or diastolic troughs
+    - Fewer than 10 systolic peaks or diastolic readings
     """
     signal = np.asarray(signal, dtype=float)
     duration = len(signal) / sampling_rate
@@ -201,24 +223,29 @@ def process_bp_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict | 
 
     min_dist = int(0.4 * sampling_rate)  # max ~150 bpm
 
+    # Issue 3: Find systolic peaks first, then locate diastole as the minimum
+    # between consecutive systolic peaks, avoiding dicrotic notch false positives
+    # that arise from find_peaks(-signal) on arterial BP waveforms.
     peaks, _ = find_peaks(signal, distance=min_dist, prominence=5)
-    troughs, _ = find_peaks(-signal, distance=min_dist, prominence=5)
-
-    if len(peaks) < 10 or len(troughs) < 10:
+    if len(peaks) < 10:
         return None
 
-    sbp = signal[peaks]
-    dbp = signal[troughs]
+    dbp_values = []
+    for i in range(len(peaks) - 1):
+        segment = signal[peaks[i]:peaks[i + 1]]
+        if len(segment) > 0:
+            dbp_values.append(float(np.min(segment)))
 
-    # Trim to same length before computing pulse pressure
-    n = min(len(sbp), len(dbp))
-    sbp_trimmed = sbp[:n]
-    dbp_trimmed = dbp[:n]
+    if len(dbp_values) < 10:
+        return None
+
+    sbp = signal[peaks[:len(dbp_values)]]
+    dbp = np.array(dbp_values)
 
     return {
         "bp_sbp_mean": float(np.mean(sbp)),
         "bp_dbp_mean": float(np.mean(dbp)),
         "bp_sbp_std": float(np.std(sbp)),
         "bp_dbp_std": float(np.std(dbp)),
-        "bp_pulse_pressure_mean": float(np.mean(sbp_trimmed - dbp_trimmed)),
+        "bp_pulse_pressure_mean": float(np.mean(sbp - dbp)),
     }
