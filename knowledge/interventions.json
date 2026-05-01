@@ -1,0 +1,50 @@
+[
+  {
+    "id": "int_circadian_light",
+    "category": "Aging",
+    "type": "intervention",
+    "title": "Light-based circadian entrainment to reduce biological age acceleration",
+    "content": "Circadian entrainment through timed light exposure is one of the most evidence-based interventions for improving circadian rhythm parameters that drive CosinorAge. Morning bright light exposure (2,500-10,000 lux for 20-30 minutes within 1 hour of waking) advances the circadian phase, increases interdaily stability (IS), reduces intradaily variability (IV), and strengthens the BMAL1/CLOCK transcriptional-translational feedback loop. Evidence: Wams et al. (2017, Current Biology) demonstrated that light therapy normalized IS and IV in individuals with social jetlag within 3 weeks. Practical implementation with smart lighting: Phillips Hue, Nanoleaf, or any tunable white LED capable of 3000K+ CCT in the morning. Evening protocol: dimming lights to below 10 lux and shifting to warm color temperature (below 2700K) 2 hours before intended sleep onset reduces melatonin suppression by 60% compared to standard room lighting. This protocol synchronizes the suprachiasmatic nucleus (SCN) phase, promotes BMAL1/PER/CRY gene cycling, and has been shown to reduce cortisol awakening response within 4 weeks. For accelerated CosinorAge, consistency of light-dark cycles (same bedtime +/- 30 minutes) is more important than total sleep duration. Irregular sleep timing has a larger effect on IV than short sleep duration.",
+    "source": "Wams et al. 2017, Current Biology; Phillips et al. 2019, Sleep Medicine Reviews"
+  },
+  {
+    "id": "int_hrv_overtraining",
+    "category": "Stress",
+    "type": "intervention",
+    "title": "HRV-guided training to prevent overtraining-induced autonomic suppression",
+    "content": "Overtraining syndrome produces a characteristic HRV pattern: RMSSD declines by more than 10% below an athlete's 7-day rolling baseline and remains suppressed for 3 or more consecutive days. This reflects sympathetic dominance, elevated circulating cortisol and IL-6, and suppressed vagal tone. From an epigenetic perspective, overtraining-induced inflammation triggers NF-kB activation and promotes hypermethylation of FKBP5 (stress response gene), BDNF, and anti-inflammatory gene promoters. HRV-guided training protocol: measure morning HRV (supine, 5 minutes) daily. If RMSSD is within 5% of rolling baseline: normal training planned. If RMSSD is 5-10% below baseline: reduce intensity by 40%, no high-intensity intervals. If RMSSD is greater than 10% below baseline: recovery day (light walk, yoga, sauna). This protocol reduces overreaching incidence by 60% compared to fixed training schedules (Kiviniemi et al., 2010). Recovery interventions that restore RMSSD: 60-90 minutes of moderate-intensity aerobic exercise (paradoxically activates vagal rebound within 24h); 20-minute cold-water immersion (raises RMSSD 8-12% above baseline within 60 min via Bezold-Jarisch reflex); mindfulness meditation (increases RMSSD 5-9% after 8-week programs). Target RMSSD restoration to age-appropriate baseline before resuming high-intensity training.",
+    "source": "Kiviniemi et al. 2010, British Journal of Sports Medicine; Plews et al. 2013"
+  },
+  {
+    "id": "int_glucose_nutrition",
+    "category": "Metabolism",
+    "type": "intervention",
+    "title": "Precision nutrition to minimize HbA1c and glucose-driven epigenetic aging",
+    "content": "Dietary strategies to reduce HbA1c and minimize oxidative stress from hyperglycemia: (1) Low glycemic index diet: replacing high-GI foods (white bread, rice, sugary beverages) with low-GI alternatives (legumes, oats, non-starchy vegetables) reduces HbA1c by 0.5-0.8% over 12 weeks in adults with HbA1c 5.7-7.0% (Livesey et al., 2019, American Journal of Clinical Nutrition). (2) Time-restricted eating (TRE): limiting food intake to an 8-10 hour window aligned with daylight hours (e.g., 8am-6pm) reduces HbA1c by 0.4% and improves post-prandial glucose variability within 12 weeks without caloric restriction (Sutton et al., 2018, Cell Metabolism). TRE also amplifies circadian gene expression in metabolic tissues, compounding epigenetic benefit. (3) Post-meal walking: 10-minute walk within 30 minutes of eating reduces post-prandial glucose spike by 12-18% by driving GLUT4 translocation in skeletal muscle. (4) Dietary fiber: 25-35 g/day soluble fiber reduces HbA1c by 0.5% and suppresses LPS-driven inflammation (NLR reduction ~0.3). (5) Polyphenols: quercetin (onions, capers), resveratrol (red grapes), and EGCG (green tea) activate SIRT1 and AMPK, promoting DNMT1 fidelity and reducing age-related epigenetic drift. For HbA1c 6.0-6.4%: target reduction to below 5.7% within 6 months via diet + exercise before pharmaceutical intervention.",
+    "source": "Livesey et al. 2019, AJCN; Sutton et al. 2018, Cell Metabolism; ADA 2024"
+  },
+  {
+    "id": "int_inflammation_exercise",
+    "category": "Inflammation",
+    "type": "intervention",
+    "title": "Exercise dose-response for NLR and WBC reduction",
+    "content": "Regular moderate-intensity exercise is the most evidence-based intervention for reducing chronic low-grade inflammation (elevated NLR and WBC). Mechanism: repeated bouts of moderate exercise train immune tolerance, reduce monocyte TLR4 expression, decrease circulating pro-inflammatory cytokines (TNF-a, IL-6 at rest), and promote anti-inflammatory M2 macrophage polarization. Evidence-based exercise protocol for inflammaging reduction: 150-300 minutes per week of moderate-intensity aerobic exercise (65-75% maximum heart rate), defined as brisk walking, cycling, or swimming at a pace where conversation is possible but labored. This reduces NLR by 0.4-0.8 points over 12 weeks (Lavie et al., 2019). Adding 2 sessions per week of resistance training further reduces inflammatory markers by activating muscle-derived anti-inflammatory myokines (IL-15, irisin). Note: Very high exercise volumes (greater than 300 min/week vigorous) may transiently increase NLR and WBC via exercise-induced muscle damage — monitor with HRV to detect overtraining. For NLR above 3.5: primary intervention is aerobic exercise plus sleep optimization. For NLR above 5.0: refer to clinician to rule out occult infection or malignancy before attributing to lifestyle factors.",
+    "source": "Lavie et al. 2019, Progress in Cardiovascular Diseases; Pedersen & Febbraio 2012, Nature Reviews"
+  },
+  {
+    "id": "int_sleep_hygiene",
+    "category": "Sleep",
+    "type": "intervention",
+    "title": "Sleep hygiene protocol for epigenetic age reduction",
+    "content": "Evidence-based sleep hygiene interventions targeting sleep efficiency, TST, and WASO: (1) Consistent sleep-wake timing: maintain bed and wake times within 30 minutes every day including weekends. Social jetlag (weekend sleep shift greater than 1 hour) is independently associated with elevated NLR, higher CosinorAge acceleration, and reduced RMSSD. (2) Temperature optimization: bedroom temperature 65-68 degrees F (18-20 degrees C) reduces SOL by 40% and increases slow-wave sleep by 15% by facilitating core body temperature drop — a critical trigger for sleep onset. (3) Blue light elimination before sleep: commercial blue light (400-490 nm) from screens suppresses melatonin by 50-60% and delays circadian phase by 1-2 hours. Use blue light filters (f.lux, Night Shift) or blue-blocking glasses from 2 hours before bed. (4) Pre-sleep relaxation: 4-7-8 breathing (inhale 4s, hold 7s, exhale 8s) or progressive muscle relaxation for 10 minutes reduces cortisol awakening response and increases RMSSD by 5-8% the following morning. (5) Caffeine cutoff: caffeine has a half-life of 5-7 hours; last intake should be by 2pm for a 10pm bedtime to avoid adenosine receptor blockade disrupting WASO. Population-level evidence: implementing 3+ of these strategies reduces GrimAge acceleration by 0.8 years over 6 months in adults with baseline insomnia symptoms (Carroll et al., 2024).",
+    "source": "Carroll et al. 2024, Nature Communications; Walker 2017, Sleep Science; American Academy of Sleep Medicine"
+  },
+  {
+    "id": "int_circadian_exercise_timing",
+    "category": "Aging",
+    "type": "intervention",
+    "title": "Exercise timing for circadian amplitude enhancement",
+    "content": "The timing of exercise relative to the circadian phase strongly modulates its effect on clock gene expression and biological aging. Morning exercise (7-10am): activates PGC-1a in skeletal muscle, which drives BMAL1 expression and reinforces the molecular clock. Morning aerobic exercise in bright outdoor light compounds both the exercise and photic circadian entrainment effects. Recommended for individuals with high intradaily variability (IV) or low interdaily stability (IS). Afternoon exercise (3-6pm, corresponding to body temperature peak): produces the largest acute RMSSD improvement and is optimal for peak athletic performance. Evening exercise (after 7pm): delays sleep onset by raising core body temperature; avoid high-intensity exercise within 3 hours of intended sleep time. Evidence from Spartano et al. (2023, Framingham Heart Study): individuals who accumulated 7,000+ steps per day with concentrated activity between 7-10am had CosinorAge acceleration 1.9 years lower than those with equivalent step counts distributed evenly throughout the day, controlling for total activity. This suggests that circadian alignment of activity matters as much as total activity volume for biological age. Practical protocol: 20-30 minute morning walk in natural daylight provides combined circadian entrainment (bright light) and metabolic benefit (step activity), with the lowest exercise burden.",
+    "source": "Spartano et al. 2023, JAMA Network Open; Ezagouri et al. 2019, Cell Metabolism"
+  }
+]
