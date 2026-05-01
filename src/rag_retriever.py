@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Optional
 
 import chromadb
+from sentence_transformers import SentenceTransformer
 
 from vector_db_builder import BioRAGBuilder
 
@@ -60,6 +61,7 @@ class BioRAG:
             name=collection_name,
             metadata={"hnsw:space": "cosine"},
         )
+        self._model = SentenceTransformer("all-MiniLM-L6-v2")
 
     @classmethod
     def from_knowledge_dir(
@@ -106,7 +108,7 @@ class BioRAG:
                 title    — Human-readable entry title
 
         Raises:
-            ValueError: If query is empty or category is not a valid value.
+            ValueError: If query is empty, category is not a valid value, or n_results < 1.
         """
         if not query or not query.strip():
             raise ValueError("query must be a non-empty string")
@@ -116,15 +118,18 @@ class BioRAG:
                 f"Invalid category '{category}'. Must be one of: {sorted(VALID_CATEGORIES)}"
             )
 
-        from sentence_transformers import SentenceTransformer
+        if n_results < 1:
+            raise ValueError("n_results must be >= 1")
 
-        model = SentenceTransformer("all-MiniLM-L6-v2")
-        query_embedding = model.encode([query], show_progress_bar=False).tolist()
+        query_embedding = self._model.encode([query], show_progress_bar=False).tolist()
 
         where_filter = {"category": {"$eq": category}} if category is not None else None
 
         total_docs = self._collection.count()
-        effective_n = min(n_results, max(total_docs, 1))
+        if total_docs == 0:
+            log.warning("search() called on empty collection '%s'", self._collection_name)
+            return []
+        effective_n = min(n_results, total_docs)
 
         query_kwargs: dict = {
             "query_embeddings": query_embedding,
