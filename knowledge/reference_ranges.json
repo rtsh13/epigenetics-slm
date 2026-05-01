@@ -49,7 +49,7 @@
   },
   {
     "id": "rr_resting_hr",
-    "category": "Sleep",
+    "category": "Stress",
     "type": "reference_range",
     "title": "Resting heart rate ranges and autonomic health",
     "content": "Resting heart rate (RHR) is measured at complete rest, ideally supine and upon waking before physical activity. Normal adult range: 60-100 bpm. Optimal range for longevity and epigenetic health: 50-65 bpm (indicative of strong parasympathetic tone and efficient cardiac function). Values above 80 bpm at rest are associated with elevated all-cause mortality risk even within the normal clinical range. Context-specific thresholds: during sleep, RHR should dip below waking RHR by 10-20 bpm (nocturnal dipping), reflecting cardiac recovery and growth hormone-driven cellular repair. Absence of nocturnal dipping (sleep RHR within 5 bpm of waking RHR) is associated with hypertension, impaired sleep quality, and accelerated biological aging. In the Autonomic Aging dataset, mean resting ECG-derived HR was 68.4 bpm (SD = 11.2), declining from 73 bpm in the youngest cohort to 65 bpm in the oldest, reflecting age-related reduction in intrinsic heart rate but also reduced heart rate variability. Chronically elevated RHR above 80 bpm is one of the earliest detectable signs of autonomic imbalance and accelerated cardiovascular aging.",
