@@ -4,7 +4,8 @@ Tests for rag_retriever.py and vector_db_builder.py
 All tests use chromadb.EphemeralClient() — no disk I/O required.
 """
 import sys
-sys.path.insert(0, "src")
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import chromadb
 import pytest
@@ -113,7 +114,6 @@ def ephemeral_client():
 @pytest.fixture
 def populated_rag(ephemeral_client):
     """BioRAG instance with 5 knowledge entries loaded."""
-    import tempfile, json, os
     from vector_db_builder import BioRAGBuilder
     from rag_retriever import BioRAG
 
@@ -141,7 +141,7 @@ class TestBioRAGBuilder:
         )
         builder.build()
         col = ephemeral_client.get_collection("test_col")
-        assert col.count() == 5
+        assert col.count() == len(MINIMAL_KNOWLEDGE)
 
     def test_build_is_idempotent(self, ephemeral_client):
         """Calling build() twice on same collection should not duplicate documents."""
@@ -168,6 +168,7 @@ class TestBioRAGBuilder:
         builder.build()
         col = ephemeral_client.get_collection("test_meta")
         result = col.get(ids=["test_aging_001_0"])
+        assert result["ids"], "Expected chunk test_aging_001_0 to exist in collection"
         meta = result["metadatas"][0]
         assert meta["category"] == "Aging"
         assert meta["type"] == "research_summary"
@@ -206,6 +207,25 @@ class TestBioRAGBuilder:
         with pytest.raises(ValueError, match="category"):
             builder.build()
 
+    def test_raises_on_invalid_category(self, ephemeral_client):
+        from vector_db_builder import BioRAGBuilder
+
+        bad_entry = {
+            "id": "bad_002",
+            "category": "NotValid",
+            "type": "mechanism",
+            "title": "T",
+            "content": "c",
+            "source": "s",
+        }
+        builder = BioRAGBuilder(
+            knowledge_entries=[bad_entry],
+            chroma_client=ephemeral_client,
+            collection_name="test_inv_cat",
+        )
+        with pytest.raises(ValueError, match="category"):
+            builder.build()
+
 
 # ---------------------------------------------------------------------------
 # BioRAG.search tests
@@ -226,10 +246,11 @@ class TestBioRAGSearch:
 
     def test_n_results_respected(self, populated_rag):
         results = populated_rag.search("aging epigenetics", n_results=2)
-        assert len(results) <= 2
+        assert len(results) == 2
 
     def test_category_filter_returns_only_that_category(self, populated_rag):
         results = populated_rag.search("health aging stress", n_results=5, category="Sleep")
+        assert len(results) > 0
         for r in results:
             assert r["category"] == "Sleep", f"Expected Sleep, got {r['category']}"
 
@@ -274,6 +295,7 @@ class TestBioRAGFromDir:
         )
         results = rag.search("aging circadian")
         assert len(results) > 0
+        assert rag._collection.count() >= 2
 
     def test_from_knowledge_dir_raises_on_missing_dir(self, ephemeral_client):
         from rag_retriever import BioRAG
