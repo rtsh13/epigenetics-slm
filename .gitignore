@@ -45,6 +45,9 @@ models/
 .DS_Store
 .claude
 
+# Git worktrees
+.worktrees/
+
 # Secrets
 .env
 *.key
