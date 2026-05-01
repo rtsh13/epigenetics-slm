@@ -14,9 +14,9 @@ Usage (from project root, venv activated):
     builder.build()
 """
 
+import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -27,7 +27,8 @@ VALID_CATEGORIES = frozenset(
     ["Aging", "Stress", "Metabolism", "Inflammation", "Sleep", "Environmental"]
 )
 REQUIRED_FIELDS = ("id", "category", "type", "title", "content", "source")
-MAX_WORDS_PER_CHUNK = 500
+# all-MiniLM-L6-v2 max_seq_length = 256 tokens; ~150 words leaves headroom for title prefix
+MAX_WORDS_PER_CHUNK = 150
 COLLECTION_NAME = "bio_rag"
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
@@ -68,8 +69,6 @@ class BioRAGBuilder:
         Raises:
             FileNotFoundError: If knowledge_dir does not exist.
         """
-        import json
-
         p = Path(knowledge_dir)
         if not p.exists():
             raise FileNotFoundError(f"Knowledge directory not found: {p}")
@@ -95,14 +94,14 @@ class BioRAGBuilder:
         """
         chunks = self._prepare_chunks()
 
+        if not chunks:
+            log.warning("No chunks to embed — knowledge_entries produced no content.")
+            return
+
         collection = self._client.get_or_create_collection(
             name=self._collection_name,
             metadata={"hnsw:space": "cosine"},
         )
-
-        if not chunks:
-            log.warning("No chunks to embed — knowledge_entries is empty.")
-            return
 
         documents = [c["text"] for c in chunks]
         metadatas = [c["metadata"] for c in chunks]
