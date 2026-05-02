@@ -15,6 +15,7 @@ data/accel_csv/
 # Generated outputs
 reports/
 progress/
+docs/
 
 # Virtual environment
 wearable-age/
