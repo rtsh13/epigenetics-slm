@@ -1,5 +1,5 @@
 """
-autonomic_aging_processor.py — Batch HRV feature extraction from the
+autonomic_aging_processor.py - Batch HRV feature extraction from the
 Autonomic Aging dataset (PhysioNet).
 
 Public functions:
@@ -29,18 +29,14 @@ try:
 except ImportError:
     from src.hrv_pipeline import load_wfdb_record, process_ecg_segment, process_bp_segment
 
-# ---------------------------------------------------------------------------
 # Logging
-# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
 log = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
 # Constants
-# ---------------------------------------------------------------------------
 PROJECT_DIR = Path(__file__).parent.parent
 DATA_DIR = PROJECT_DIR / "data" / "autonomic_aging"
 SUBJECT_CSV = DATA_DIR / "subject-info.csv"
@@ -49,9 +45,7 @@ CHECKPOINT_PATH = PROJECT_DIR / "data" / "autonomic_checkpoint.json"
 EDA_DIR = PROJECT_DIR / "reports" / "week3_eda"
 
 
-# ---------------------------------------------------------------------------
 # Function 1: load_subject_metadata
-# ---------------------------------------------------------------------------
 
 def load_subject_metadata(csv_path: str) -> pd.DataFrame:
     """
@@ -79,9 +73,7 @@ def load_subject_metadata(csv_path: str) -> pd.DataFrame:
     return df
 
 
-# ---------------------------------------------------------------------------
 # Function 2: process_single_participant
-# ---------------------------------------------------------------------------
 
 def process_single_participant(record_path: str, subject_id: str) -> dict | None:
     """
@@ -116,9 +108,7 @@ def process_single_participant(record_path: str, subject_id: str) -> dict | None
     return features
 
 
-# ---------------------------------------------------------------------------
 # Function 3: _save_checkpoint
-# ---------------------------------------------------------------------------
 
 def _save_checkpoint(results: list, path: Path) -> None:
     """Atomically save checkpoint via tmp file + rename."""
@@ -128,9 +118,7 @@ def _save_checkpoint(results: list, path: Path) -> None:
     tmp.rename(path)
 
 
-# ---------------------------------------------------------------------------
 # Function 4: batch_process
-# ---------------------------------------------------------------------------
 
 def batch_process(
     data_dir: Path = DATA_DIR,
@@ -198,9 +186,7 @@ def batch_process(
     return pd.DataFrame(results)
 
 
-# ---------------------------------------------------------------------------
 # Function 5: run_eda
-# ---------------------------------------------------------------------------
 
 def run_eda(df: pd.DataFrame) -> None:
     """
@@ -237,7 +223,7 @@ def run_eda(df: pd.DataFrame) -> None:
     # 3. Resting HR vs age
     _scatter("age", "hrv_mean_hr", "resting_hr_vs_age.png", color="crimson")
 
-    # 4. HRV feature distributions — 2×3 grid
+    # 4. HRV feature distributions - 2×3 grid
     hrv_cols = [
         "hrv_rmssd", "hrv_sdnn", "hrv_pnn50",
         "hrv_lf_hf", "hrv_mean_hr", "hrv_dfa_alpha1",
@@ -256,9 +242,7 @@ def run_eda(df: pd.DataFrame) -> None:
     log.info("EDA plots saved to %s", EDA_DIR)
 
 
-# ---------------------------------------------------------------------------
 # Function 6: main
-# ---------------------------------------------------------------------------
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Week 3: Autonomic Aging HRV Pipeline")

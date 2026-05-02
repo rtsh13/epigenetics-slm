@@ -1,5 +1,5 @@
 """
-hrv_pipeline.py — HRV feature extraction from ECG/BP signals.
+hrv_pipeline.py - HRV feature extraction from ECG/BP signals.
 
 Public functions:
     process_ecg_segment(signal, sampling_rate=1000) -> dict | None
@@ -16,9 +16,7 @@ from scipy.signal import find_peaks
 import wfdb
 
 
-# ---------------------------------------------------------------------------
 # process_ecg_segment
-# ---------------------------------------------------------------------------
 
 def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict | None:
     """
@@ -57,7 +55,7 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
     if len(rpeaks) < 30:
         return None
 
-    # Issue 5: Filter ectopic/artefact beats — keep only 300–2000 ms (30–200 bpm)
+    # Issue 5: Filter ectopic/artefact beats - keep only 300–2000 ms (30–200 bpm)
     rr_ms = np.diff(rpeaks) / sampling_rate * 1000.0
     valid_mask = (rr_ms >= 300) & (rr_ms <= 2000)
     if valid_mask.sum() < 29:  # need ≥30 peaks → ≥29 intervals
@@ -79,7 +77,7 @@ def process_ecg_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict |
     # nk.hrv_time/frequency/nonlinear all accept R-peak sample indices directly, which
     # is the unambiguous API per NeuroKit2 docs (verified equivalent on v0.2.13).
 
-    # Issue 4: Time-domain HRV — wrap in try/except, consistent with other branches
+    # Issue 4: Time-domain HRV - wrap in try/except, consistent with other branches
     hrv_rmssd = None
     hrv_sdnn = None
     hrv_pnn50 = None
@@ -155,16 +153,14 @@ def _safe_scalar(df, column: str) -> float | None:
         return None
 
 
-# ---------------------------------------------------------------------------
 # load_wfdb_record
-# ---------------------------------------------------------------------------
 
 def load_wfdb_record(record_path: str) -> tuple:
     """
     Load a WFDB record and return (ecg_signal, bp_signal_or_None, fs).
 
-    ECG channel priority: ECG, II, I, EKG — falls back to channel 0.
-    BP  channel priority: ABP, BP, SBP, NIBP — returns None if not found.
+    ECG channel priority: ECG, II, I, EKG - falls back to channel 0.
+    BP  channel priority: ABP, BP, SBP, NIBP - returns None if not found.
 
     Raises FileNotFoundError if the .hea header is missing.
     """
@@ -199,9 +195,7 @@ def _find_channel(sig_names_upper: list, priority: list, default):
     return default
 
 
-# ---------------------------------------------------------------------------
 # process_bp_segment
-# ---------------------------------------------------------------------------
 
 def process_bp_segment(signal: np.ndarray, sampling_rate: int = 1000) -> dict | None:
     """

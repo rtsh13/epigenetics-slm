@@ -1,0 +1,74 @@
+[
+  {
+    "id": "rr_hrv_rmssd",
+    "category": "Stress",
+    "type": "reference_range",
+    "title": "RMSSD reference ranges by age decade",
+    "content": "RMSSD (root mean square of successive RR interval differences) quantifies beat-to-beat variability driven by respiratory sinus arrhythmia and reflects parasympathetic (vagal) tone. Normative values from the Autonomic Aging dataset (Schumann et al., 2023, n=1,121 healthy adults): ages 20-29: 42-68 ms (median 55 ms); ages 30-39: 35-58 ms (median 46 ms); ages 40-49: 28-48 ms (median 37 ms); ages 50-59: 22-38 ms (median 30 ms); ages 60-69: 16-30 ms (median 23 ms); ages 70+: 12-24 ms (median 18 ms). Sex differences: females typically 5-10% higher RMSSD than age-matched males, attributed to estrogen-mediated vagal enhancement. Values below the age-decade lower bound indicate autonomic aging acceleration. RMSSD below 20 ms in any adult regardless of age is clinically significant and associated with elevated cardiovascular mortality risk. RMSSD above the upper bound for age suggests above-average cardiac autonomic function and resilient stress response. Acute stress, overtraining, and sleep deprivation transiently suppress RMSSD by 15-30%.",
+    "source": "Schumann et al. 2023, Frontiers in Aging Neuroscience; Task Force of ESC and NASPE 1996"
+  },
+  {
+    "id": "rr_hrv_sdnn",
+    "category": "Stress",
+    "type": "reference_range",
+    "title": "SDNN reference ranges by age",
+    "content": "SDNN (standard deviation of all normal RR intervals) reflects total HRV from all regulatory mechanisms — both sympathetic and parasympathetic. It is the broadest HRV metric and closely tracks overall autonomic function. Normative values from short-term recordings (5-min ECG, Autonomic Aging dataset): ages 20-29: 55-95 ms; ages 30-39: 48-82 ms; ages 40-49: 40-70 ms; ages 50-59: 32-60 ms; ages 60-69: 25-50 ms; ages 70+: 18-40 ms. SDNN below 50 ms from a 24-hour Holter recording is a recognized independent predictor of cardiac mortality (ATRAMI study). From 5-minute recordings, the thresholds are lower but the directional relationships hold. SDNN declines approximately 0.8-1.2 ms per year of chronological age in healthy populations. A rapid year-over-year decline in SDNN (greater than 5 ms/year) suggests accelerated autonomic aging. SDNN is less sensitive to acute perturbations than RMSSD and better reflects chronic autonomic adaptation.",
+    "source": "Schumann et al. 2023; La Rovere et al. 1998, Lancet (ATRAMI)"
+  },
+  {
+    "id": "rr_hrv_lf_hf",
+    "category": "Stress",
+    "type": "reference_range",
+    "title": "LF/HF ratio interpretation",
+    "content": "The LF/HF ratio is the ratio of low-frequency power (0.04-0.15 Hz) to high-frequency power (0.15-0.4 Hz) in the HRV power spectrum. HF power is driven almost exclusively by respiratory sinus arrhythmia (parasympathetic). LF power reflects a mixture of sympathetic and parasympathetic modulation. Normal resting LF/HF ratio: 0.5 to 2.0 in healthy adults at rest. Ratio above 2.5 during rest suggests sympathetic dominance or autonomic imbalance, often seen in chronic stress, burnout, or overtraining states. Ratio below 0.4 during rest may indicate very high parasympathetic tone (e.g., elite endurance athletes) or autonomic neuropathy. LF/HF increases with age, reflecting progressive vagal withdrawal. In the Autonomic Aging cohort, mean LF/HF rises from approximately 1.2 in adults aged 20-29 to 1.9 in adults aged 60-69. Importantly, the LF/HF ratio is highly context-dependent: it changes dramatically with posture, breathing rate, and mental load. Interpret alongside absolute RMSSD and pNN50 values.",
+    "source": "Task Force of ESC and NASPE 1996; Schumann et al. 2023"
+  },
+  {
+    "id": "rr_hba1c",
+    "category": "Metabolism",
+    "type": "reference_range",
+    "title": "HbA1c clinical ranges and epigenetic implications",
+    "content": "HbA1c (glycated hemoglobin A1c) reflects the average blood glucose concentration over the preceding 90-120 days, proportional to the fraction of hemoglobin glycated by ambient glucose. American Diabetes Association 2024 clinical thresholds: below 5.7% — normal; 5.7-6.4% — prediabetes (impaired fasting glucose or impaired glucose tolerance); 6.5% and above — diabetes (requires confirmation). Optimal metabolic range for epigenetic health: below 5.5%. For reference, NHANES 2011-2012 adult population: mean HbA1c = 5.68%, with 35% of adults in the prediabetic range. From an epigenetic aging perspective, HbA1c above 5.5% is associated with measurable GrimAge acceleration even within the non-diabetic range. Lu et al. (2022, Nature Aging) found each 1% increase in HbA1c above 5.5% correlates with approximately 1.4-year acceleration in DNAm GrimAge. Chronic hyperglycemia promotes formation of advanced glycation end-products (AGEs) that cross-link collagen, generate reactive oxygen species, trigger NF-kB inflammatory signaling, and alter methylation patterns at TXNIP, ABCG1, and CPT1A promoters.",
+    "source": "ADA Standards of Care 2024; Lu et al. 2022, Nature Aging; NHANES 2011-2012"
+  },
+  {
+    "id": "rr_nlr",
+    "category": "Inflammation",
+    "type": "reference_range",
+    "title": "NLR normal ranges and inflammaging thresholds",
+    "content": "The neutrophil-to-lymphocyte ratio (NLR) is calculated from a standard complete blood count as: NLR = absolute neutrophil count / absolute lymphocyte count. Normal range in healthy adults: 1.0-3.0. Interpretation tiers: 1.0-2.0 — optimal immune balance, low inflammaging risk; 2.0-3.0 — normal, slightly elevated sympathoadrenal activation possible; 3.0-4.0 — mild systemic inflammation, warrants lifestyle review; 4.0-5.0 — moderate inflammation, elevated cardiovascular and cancer risk; above 5.0 — significant systemic inflammation, strongly associated with adverse outcomes. NLR increases with age as part of the inflammaging phenotype: typical NLR is 1.8-2.2 in adults aged 20-40, rising to 2.4-3.2 in adults aged 60-80. In the NHANES 2011-2014 accelerometry cohort, NLR above 3.5 was independently associated with reduced step count, lower sleep efficiency, and higher biological age acceleration after adjustment for BMI and comorbidities. Elevated NLR reflects accelerated neutrophil turnover and lymphopenia, both hallmarks of chronic low-grade inflammation driving the epigenetic erosion of aging.",
+    "source": "Forget et al. 2017, BioMed Research International; NHANES Accelerometry Study 2023"
+  },
+  {
+    "id": "rr_wbc",
+    "category": "Inflammation",
+    "type": "reference_range",
+    "title": "WBC count and inflammation reference ranges",
+    "content": "Total white blood cell (WBC) count is reported in cells per microliter (cells/uL) or 10^9 cells per liter. Normal adult range: 4,500-11,000 cells/uL. From an inflammaging perspective, the upper half of the normal range carries prognostic significance: WBC above 7,000 cells/uL is associated with low-grade chronic inflammation and modestly elevated cardiovascular risk. WBC above 9,000 cells/uL in the absence of acute infection is considered an inflammatory phenotype. Epidemiological studies consistently show that WBC count in the high-normal range (8,000-11,000) predicts incident cardiovascular disease, type 2 diabetes, and all-cause mortality with relative risks of 1.2-1.5 compared to WBC below 5,500. In accelerometry-linked NHANES data, higher WBC count correlates with lower circadian amplitude, lower sleep efficiency, and higher intradaily variability — suggesting bidirectional interactions between immune activation and circadian disruption. WBC is less specific than NLR but provides a useful corroborating signal.",
+    "source": "Shankar et al. 2011, Diabetes Care; NHANES Accelerometry Study 2023"
+  },
+  {
+    "id": "rr_resting_hr",
+    "category": "Stress",
+    "type": "reference_range",
+    "title": "Resting heart rate ranges and autonomic health",
+    "content": "Resting heart rate (RHR) is measured at complete rest, ideally supine and upon waking before physical activity. Normal adult range: 60-100 bpm. Optimal range for longevity and epigenetic health: 50-65 bpm (indicative of strong parasympathetic tone and efficient cardiac function). Values above 80 bpm at rest are associated with elevated all-cause mortality risk even within the normal clinical range. Context-specific thresholds: during sleep, RHR should dip below waking RHR by 10-20 bpm (nocturnal dipping), reflecting cardiac recovery and growth hormone-driven cellular repair. Absence of nocturnal dipping (sleep RHR within 5 bpm of waking RHR) is associated with hypertension, impaired sleep quality, and accelerated biological aging. In the Autonomic Aging dataset, mean resting ECG-derived HR was 68.4 bpm (SD = 11.2), declining from 73 bpm in the youngest cohort to 65 bpm in the oldest, reflecting age-related reduction in intrinsic heart rate but also reduced heart rate variability. Chronically elevated RHR above 80 bpm is one of the earliest detectable signs of autonomic imbalance and accelerated cardiovascular aging.",
+    "source": "Cooney et al. 2010, European Heart Journal; Schumann et al. 2023"
+  },
+  {
+    "id": "rr_cosinorage_acceleration",
+    "category": "Aging",
+    "type": "reference_range",
+    "title": "CosinorAge biological age acceleration reference",
+    "content": "CosinorAge biological age is estimated from circadian rhythm parameters extracted from 7-day wrist accelerometry. The primary output is biological age acceleration, defined as (estimated biological age) minus (chronological age). In a healthy population, this value follows an approximately normal distribution centered at 0, with standard deviation of approximately 6-8 years in the NHANES validation cohort. Interpretation: acceleration of -5 to +2 years — within normal aging range; acceleration of +2 to +5 years — mildly accelerated, lifestyle review recommended; acceleration of +5 to +8 years — moderately accelerated, multiple risk factors likely present; acceleration above +8 years — substantially accelerated, highest quartile risk for mortality and age-related disease. Circadian parameters driving acceleration: high intradaily variability (IV > 1.2), low interdaily stability (IS < 0.5), high L5 activity, low relative amplitude (RA < 0.7), and shifted or blunted acrophase. These parameters reflect fragmented, irregular, or attenuated circadian rhythms, which suppress BMAL1/CLOCK-driven gene expression and promote epigenetic aging.",
+    "source": "Shim et al. 2024, npj Digital Medicine; Spartano et al. 2023"
+  },
+  {
+    "id": "rr_sleep_architecture",
+    "category": "Sleep",
+    "type": "reference_range",
+    "title": "Actigraphy sleep architecture norms",
+    "content": "Sleep architecture metrics from wrist actigraphy using the Cole-Kripke algorithm (used in CosinorAge pipeline for NHANES data). Total sleep time (TST) normal range: 7-9 hours for adults aged 18-64; 7-8 hours for adults aged 65+. Sleep efficiency (SE): above 85% is normal; 80-85% mildly reduced; below 80% indicates clinically significant insomnia phenotype. Sleep onset latency (SOL): under 20 minutes is normal; 20-30 minutes mildly elevated; above 30 minutes suggests sleep initiation difficulty. Waking after sleep onset (WASO): below 30 minutes per night is normal; 30-60 minutes mildly elevated; above 60 minutes indicates significant sleep fragmentation. NHANES 2011-2012 population means (actigraphy-derived): TST = 6.8h, SE = 84%, SOL = 18 min, WASO = 42 min. From an epigenetic aging perspective, Carroll et al. (2024) found that TST below 6 hours is associated with 1.8-year GrimAge acceleration, and SE below 80% with 1.2-year acceleration, independent of BMI and depression.",
+    "source": "Cole-Kripke algorithm; Carroll et al. 2024, Nature Communications; NHANES 2011-2012"
+  }
+]
