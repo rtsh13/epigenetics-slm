@@ -95,7 +95,7 @@ class BioRAGBuilder:
         chunks = self._prepare_chunks()
 
         if not chunks:
-            log.warning("No chunks to embed — knowledge_entries produced no content.")
+            log.warning("No chunks to embed - knowledge_entries produced no content.")
             return
 
         collection = self._client.get_or_create_collection(
@@ -119,9 +119,7 @@ class BioRAGBuilder:
             "Upserted %d chunks into collection '%s'", len(chunks), self._collection_name
         )
 
-    # ------------------------------------------------------------------
     # Internal helpers
-    # ------------------------------------------------------------------
 
     def _prepare_chunks(self) -> list[dict]:
         """Validate entries and split long ones into chunks.

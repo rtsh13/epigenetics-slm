@@ -101,11 +101,11 @@ class BioRAG:
 
         Returns:
             List of dicts, each with keys:
-                context  — The retrieved text chunk
-                source   — Citation string
-                type     — entry type
-                category — biomarker category
-                title    — Human-readable entry title
+                context  - The retrieved text chunk
+                source   - Citation string
+                type     - entry type
+                category - biomarker category
+                title    - Human-readable entry title
 
         Raises:
             ValueError: If query is empty, category is not a valid value, or n_results < 1.
