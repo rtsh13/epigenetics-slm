@@ -1,7 +1,7 @@
 """
 Tests for hrv_pipeline.py
 
-All tests use NeuroKit2 synthetic ECG — no real Autonomic Aging data needed.
+All tests use NeuroKit2 synthetic ECG - no real Autonomic Aging data needed.
 """
 import numpy as np
 import neurokit2 as nk
@@ -19,9 +19,7 @@ def make_ecg(duration=300, sampling_rate=1000, heart_rate=65):
     )
 
 
-# ---------------------------------------------------------------------------
 # process_ecg_segment
-# ---------------------------------------------------------------------------
 class TestProcessEcgSegment:
     def test_returns_dict_with_required_keys(self):
         from src.hrv_pipeline import process_ecg_segment
@@ -69,9 +67,7 @@ class TestProcessEcgSegment:
         assert process_ecg_segment(np.zeros(300_000), sampling_rate=1000) is None
 
 
-# ---------------------------------------------------------------------------
 # load_wfdb_record
-# ---------------------------------------------------------------------------
 class TestLoadWfdbRecord:
     def test_raises_on_missing_file(self):
         from src.hrv_pipeline import load_wfdb_record
@@ -115,9 +111,7 @@ class TestLoadWfdbRecord:
         assert bp_out is None
 
 
-# ---------------------------------------------------------------------------
 # process_bp_segment
-# ---------------------------------------------------------------------------
 class TestProcessBpSegment:
     def test_returns_dict_with_required_keys(self):
         from src.hrv_pipeline import process_bp_segment
@@ -143,9 +137,7 @@ class TestProcessBpSegment:
         assert process_bp_segment(bp, sampling_rate=1000) is None
 
 
-# ---------------------------------------------------------------------------
 # load_subject_metadata
-# ---------------------------------------------------------------------------
 class TestLoadSubjectMetadata:
     def test_loads_csv_and_normalises_columns(self, tmp_path):
         from src.autonomic_aging_processor import load_subject_metadata
@@ -165,9 +157,7 @@ class TestLoadSubjectMetadata:
             load_subject_metadata("/nonexistent/subject-info.csv")
 
 
-# ---------------------------------------------------------------------------
 # process_single_participant
-# ---------------------------------------------------------------------------
 class TestProcessSingleParticipant:
     def test_returns_feature_dict(self, tmp_path):
         import wfdb

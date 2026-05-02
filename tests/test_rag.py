@@ -1,7 +1,7 @@
 """
 Tests for rag_retriever.py and vector_db_builder.py
 
-All tests use chromadb.EphemeralClient() — no disk I/O required.
+All tests use chromadb.EphemeralClient() - no disk I/O required.
 """
 import sys
 from pathlib import Path
@@ -11,9 +11,7 @@ import chromadb
 import pytest
 
 
-# ---------------------------------------------------------------------------
 # Fixtures
-# ---------------------------------------------------------------------------
 
 MINIMAL_KNOWLEDGE = [
     {
@@ -126,9 +124,7 @@ def populated_rag(ephemeral_client):
     return BioRAG(client=ephemeral_client, collection_name="test_bio_rag")
 
 
-# ---------------------------------------------------------------------------
 # BioRAGBuilder tests
-# ---------------------------------------------------------------------------
 
 class TestBioRAGBuilder:
     def test_build_populates_collection(self, ephemeral_client):
@@ -227,9 +223,7 @@ class TestBioRAGBuilder:
             builder.build()
 
 
-# ---------------------------------------------------------------------------
 # BioRAG.search tests
-# ---------------------------------------------------------------------------
 
 class TestBioRAGSearch:
     def test_returns_list_of_dicts(self, populated_rag):
@@ -275,9 +269,7 @@ class TestBioRAGSearch:
         assert "Metabolism" in categories
 
 
-# ---------------------------------------------------------------------------
 # BioRAG.from_knowledge_dir (file-based constructor) tests
-# ---------------------------------------------------------------------------
 
 class TestBioRAGFromDir:
     def test_from_knowledge_dir_loads_all_files(self, tmp_path, ephemeral_client):
