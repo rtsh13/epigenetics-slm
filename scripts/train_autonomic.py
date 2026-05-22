@@ -48,7 +48,7 @@ def encode_sex(df: pd.DataFrame) -> pd.DataFrame:
 
 def main() -> None:
     if not FEATURES_PATH.exists():
-        log.info("autonomic_features.parquet not found — running HRV extraction pipeline...")
+        log.info("autonomic_features.parquet not found, running HRV extraction pipeline...")
         from autonomic_aging_processor import batch_process, load_subject_metadata
 
         if not DATA_DIR.exists():
