@@ -76,7 +76,7 @@ class XGBoostAgePredictor:
             "learning_rate": [0.05, 0.1, 0.2],
         }
         cv = GridSearchCV(
-            XGBRegressor(random_state=42, n_jobs=-1),
+            XGBRegressor(random_state=42),
             param_grid,
             cv=5,
             scoring="neg_mean_absolute_error",
@@ -111,8 +111,12 @@ class XGBoostAgePredictor:
     def predict(self, df: pd.DataFrame) -> np.ndarray:
         if self.model is None:
             raise RuntimeError("Call fit() before predict().")
-        X = df[self.feature_cols].dropna()[self.feature_cols].values
-        return self.model.predict(X)
+        sub = df[self.feature_cols]
+        if sub.isna().any(axis=None):
+            raise ValueError(
+                "Input contains NaN values. Drop or impute missing values before calling predict()."
+            )
+        return self.model.predict(sub.values)
 
     def evaluate(self, df: pd.DataFrame) -> dict:
         if self.model is None:
@@ -130,13 +134,14 @@ class XGBoostAgePredictor:
         X = clean[self.feature_cols].values
         explainer = shap.TreeExplainer(self.model)
         shap_values = explainer.shap_values(X)
-        plt.figure(figsize=(10, 8))
         shap.summary_plot(shap_values, X, feature_names=self.feature_cols, show=False)
-        if save_path:
+        fig = plt.gcf()
+        fig.set_size_inches(10, 8)
+        if save_path is not None:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
-            plt.savefig(save_path, dpi=150, bbox_inches="tight")
+            fig.savefig(save_path, dpi=150, bbox_inches="tight")
             log.info("SHAP beeswarm saved to %s", save_path)
-        plt.close()
+        plt.close(fig)
 
     def save(self, path: str) -> None:
         if self.model is None:
