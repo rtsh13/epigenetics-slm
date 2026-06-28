@@ -84,7 +84,7 @@ def build_response(
     hba1c_label, hba1c_interp = classifications["hba1c"]
     nlr_label, nlr_interp = classifications["nlr"]
     sleep_label, sleep_interp = classifications["sleep"]
-    circ_label, circ_interp = classifications["circadian"]
+    _, circ_interp = classifications["circadian"]
 
     first_source = rag_chunks[0].get("source", "Bio-RAG") if rag_chunks else "Bio-RAG"
     second_source = rag_chunks[1].get("source", first_source) if len(rag_chunks) > 1 else first_source

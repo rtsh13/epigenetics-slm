@@ -85,7 +85,7 @@ def test_build_prompt_has_section_markers():
 
 def test_build_response_has_five_section_headers():
     response = build_response(BIOMARKERS, CLASSIFICATIONS, RAG_CHUNKS)
-    for header in ["AGING", "METABOLISM", "INFLAMMATION", "SLEEP"]:
+    for header in ["AGING", "STRESS", "METABOLISM", "INFLAMMATION", "SLEEP"]:
         assert header in response, f"missing section header: {header}"
 
 
