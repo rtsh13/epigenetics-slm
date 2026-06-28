@@ -84,10 +84,12 @@ def classify_sleep(tst_minutes: float, sri: float) -> tuple[str, str]:
 
     interpretation = "; ".join(parts).capitalize() + "."
 
-    if duration_flag == "short" or reg_flag == "irregular":
-        label = "Short" if duration_flag == "short" else "Irregular"
-    elif duration_flag == "adequate" and reg_flag == "regular":
-        label = "Adequate"
+    if reg_flag == "irregular":
+        label = "Irregular"
+    elif duration_flag == "short":
+        label = "Short"
+    elif duration_flag == "long":
+        label = "Long"
     else:
         label = "Adequate"
 

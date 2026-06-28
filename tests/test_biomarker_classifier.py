@@ -107,3 +107,16 @@ class TestClassifySleep:
         label, interp = classify_sleep(440.0, 35.0)
         assert label == "Irregular"
         assert "irregular" in interp.lower() or "misalign" in interp.lower()
+
+    def test_long_sleep(self):
+        label, interp = classify_sleep(600.0, 70.0)  # 10h, regular
+        assert label == "Long"
+        assert "extended" in interp.lower() or "long" in interp.lower()
+
+    def test_short_and_irregular_resolves_to_irregular(self):
+        label, _ = classify_sleep(300.0, 30.0)  # 5h, very irregular
+        assert label == "Irregular", "irregularity should dominate when both apply"
+
+    def test_long_and_irregular_resolves_to_irregular(self):
+        label, _ = classify_sleep(600.0, 30.0)  # 10h, very irregular
+        assert label == "Irregular"
