@@ -50,3 +50,25 @@ def test_generate_passes_generation_kwargs(monkeypatch):
     _, kwargs = gen._call_backend.call_args
     assert kwargs.get("max_new_tokens") == 42
     assert kwargs.get("temperature") == 0.7
+
+
+def test_resolve_backend_auto_gguf():
+    assert SLMGenerator._resolve_backend("models/foo.gguf", "auto") == "gguf"
+
+
+def test_resolve_backend_auto_hf_dir():
+    assert SLMGenerator._resolve_backend("models/slm_hf", "auto") == "hf"
+
+
+def test_resolve_backend_explicit_hf_overrides_extension():
+    assert SLMGenerator._resolve_backend("models/foo.gguf", "hf") == "hf"
+
+
+def test_resolve_backend_rejects_unknown():
+    with pytest.raises(ValueError):
+        SLMGenerator._resolve_backend("models/foo.gguf", "onnx")
+
+
+def test_missing_model_path_raises(tmp_path):
+    with pytest.raises(FileNotFoundError):
+        SLMGenerator(str(tmp_path / "does-not-exist.gguf"))
