@@ -58,3 +58,53 @@ def build_training_args(
         "bf16": True,
         "optim": "paged_adamw_8bit",
     }
+
+
+def train(
+    dataset_path: str,
+    output_dir: str,
+    base_model: str = "unsloth/Llama-3.2-1B-Instruct",
+    epochs: int = 3,
+    batch_size: int = 2,
+    grad_accum: int = 4,
+    lr: float = 2e-4,
+    max_seq_length: int = 2048,
+) -> None:
+    from unsloth import FastLanguageModel
+    from trl import SFTTrainer
+    from datasets import Dataset
+
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=base_model,
+        max_seq_length=max_seq_length,
+        load_in_4bit=True,
+    )
+    model = FastLanguageModel.get_peft_model(
+        model,
+        r=16,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                        "gate_proj", "up_proj", "down_proj"],
+        use_gradient_checkpointing=True,
+    )
+
+    records = load_jsonl_dataset(dataset_path, "train")
+    train_ds = Dataset.from_list([format_example(r) for r in records])
+
+    args = build_training_args(
+        output_dir=output_dir, epochs=epochs, batch_size=batch_size,
+        grad_accum=grad_accum, lr=lr,
+    )
+
+    trainer = SFTTrainer(
+        model=model,
+        tokenizer=tokenizer,
+        train_dataset=train_ds,
+        dataset_text_field="text",
+        max_seq_length=max_seq_length,
+        args=args,
+    )
+    trainer.train()
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)

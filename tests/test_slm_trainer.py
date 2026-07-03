@@ -1,5 +1,6 @@
 import json
 import sys
+import types
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -63,3 +64,63 @@ def test_build_training_args_overrides():
     assert args["per_device_train_batch_size"] == 1
     assert args["gradient_accumulation_steps"] == 8
     assert args["learning_rate"] == 1e-4
+
+
+def test_train_wires_helpers_and_calls_trainer(tmp_path, monkeypatch):
+    from slm_trainer import train
+
+    ds_path = tmp_path / "d.jsonl"
+    _write_jsonl(ds_path, [
+        {"seqn": 1, "prompt": "p1", "response": "r1", "split": "train"},
+        {"seqn": 2, "prompt": "p2", "response": "r2", "split": "eval"},
+    ])
+
+    calls = {}
+
+    fake_unsloth = types.SimpleNamespace()
+    fake_model = types.SimpleNamespace(save_pretrained=lambda path: None)
+    fake_tokenizer = types.SimpleNamespace(save_pretrained=lambda path: None)
+
+    class _FastLM:
+        @staticmethod
+        def from_pretrained(**kwargs):
+            calls["from_pretrained"] = kwargs
+            return fake_model, fake_tokenizer
+
+        @staticmethod
+        def get_peft_model(model, **kwargs):
+            calls["peft_kwargs"] = kwargs
+            return model
+
+    fake_unsloth.FastLanguageModel = _FastLM
+    monkeypatch.setitem(sys.modules, "unsloth", fake_unsloth)
+
+    class _Trainer:
+        def __init__(self, **kwargs):
+            calls["trainer_kwargs"] = kwargs
+
+        def train(self):
+            calls["train_called"] = True
+
+    fake_trl = types.SimpleNamespace(SFTTrainer=_Trainer)
+    monkeypatch.setitem(sys.modules, "trl", fake_trl)
+
+    fake_datasets = types.SimpleNamespace(
+        Dataset=types.SimpleNamespace(from_list=lambda rows: rows),
+    )
+    monkeypatch.setitem(sys.modules, "datasets", fake_datasets)
+
+    train(
+        dataset_path=str(ds_path),
+        output_dir=str(tmp_path / "out"),
+        epochs=1, batch_size=1, grad_accum=1,
+    )
+
+    assert calls["from_pretrained"]["model_name"] == "unsloth/Llama-3.2-1B-Instruct"
+    assert calls["train_called"] is True
+    trainer_kwargs = calls["trainer_kwargs"]
+    assert trainer_kwargs["model"] is fake_model
+    assert trainer_kwargs["tokenizer"] is fake_tokenizer
+    train_dataset = trainer_kwargs["train_dataset"]
+    assert len(train_dataset) == 1
+    assert train_dataset[0]["text"].startswith("<|begin_of_text|>")
