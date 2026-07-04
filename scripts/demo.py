@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pandas as pd
 
-PROJECT_DIR = Path(__file__).parent.parent
+PROJECT_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_DIR / "src"))
 
 from baseline_trainer import XGBoostAgePredictor
