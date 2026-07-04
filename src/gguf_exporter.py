@@ -53,3 +53,4 @@ def convert_to_gguf(
         [str(quantize_bin), fp16_path, str(out_path), quantization],
         check=True,
     )
+    Path(fp16_path).unlink(missing_ok=True)

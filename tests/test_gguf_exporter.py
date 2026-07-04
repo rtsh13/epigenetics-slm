@@ -73,6 +73,7 @@ def test_convert_to_gguf_invokes_llama_cpp_subprocess(tmp_path, monkeypatch):
     from gguf_exporter import convert_to_gguf
 
     invocations = []
+    unlinked = []
 
     def _fake_run(cmd, check, **kwargs):
         invocations.append(cmd)
@@ -88,6 +89,13 @@ def test_convert_to_gguf_invokes_llama_cpp_subprocess(tmp_path, monkeypatch):
     llama_dir = tmp_path / "llama.cpp"
     llama_dir.mkdir()
 
+    original_unlink = __import__("pathlib").Path.unlink
+
+    def _fake_unlink(self, missing_ok=False):
+        unlinked.append(str(self))
+
+    monkeypatch.setattr("pathlib.Path.unlink", _fake_unlink)
+
     convert_to_gguf(
         hf_dir=str(hf_dir),
         out_path=str(out_path),
@@ -102,6 +110,9 @@ def test_convert_to_gguf_invokes_llama_cpp_subprocess(tmp_path, monkeypatch):
     quantize_cmd = invocations[1]
     assert any("quantize" in part for part in quantize_cmd)
     assert "q4_k_m" in " ".join(quantize_cmd).lower()
+    assert any("fp16.gguf" in p for p in unlinked), (
+        "fp16 intermediate must be deleted after quantization"
+    )
 
 
 def test_convert_to_gguf_raises_when_llama_cpp_dir_missing(tmp_path, monkeypatch):
