@@ -98,6 +98,8 @@ def row_to_pair(row: dict, rag: BioRAG) -> dict | None:
         "seqn": int(row["seqn"]),
         "prompt": build_prompt(biomarkers, rag_chunks),
         "response": build_response(biomarkers, classifications, rag_chunks),
+        "biomarkers": biomarkers,
+        "rag_chunks": rag_chunks,
     }
 
 

@@ -140,3 +140,14 @@ class TestBuildDataset:
         build_dataset(str(tmp_path / "mini.parquet"), str(out1), _fake_rag(), 0.3, seed=42)
         build_dataset(str(tmp_path / "mini.parquet"), str(out2), _fake_rag(), 0.3, seed=42)
         assert out1.read_text() == out2.read_text()
+
+
+def test_row_to_pair_includes_biomarkers_and_rag_chunks():
+    pair = row_to_pair(_good_row(), _fake_rag())
+    assert "biomarkers" in pair
+    assert pair["biomarkers"]["hba1c"] == 7.2
+    assert pair["biomarkers"]["nlr"] == 5.8
+    assert pair["biomarkers"]["tst_minutes"] == 330.0
+    assert "rag_chunks" in pair
+    assert len(pair["rag_chunks"]) == 2
+    assert pair["rag_chunks"][0]["source"] == "Liu et al. 2020"
