@@ -46,7 +46,7 @@ def build_training_args(
         "warmup_ratio": 0.03,
         "logging_steps": 10,
         "save_strategy": "steps",
-        "save_steps": "100",
+        "save_steps": 100,
         "report_to": "none",
         "bf16": True,
         "optim": "adamw_torch",
