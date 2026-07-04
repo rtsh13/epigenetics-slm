@@ -221,7 +221,7 @@ def print_report(label: str, idx: int, p_full: pd.Series, pred_age: float, rag_r
         wrap_print(context[:300] + ("..." if len(context) > 300 else ""), indent=8)
 
 
-def _build_biomarker_dict(p_full, rag_chunks):
+def _build_biomarker_dict(p_full):
     return {
         "age": float(p_full["age"]),
         "sex": p_full["sex"],
@@ -239,7 +239,7 @@ def _build_biomarker_dict(p_full, rag_chunks):
 
 def print_slm_section(generator, p_full, rag_chunks):
     section("SLM NARRATIVE  (Llama 3.2 1B, fine-tuned)")
-    biomarkers = _build_biomarker_dict(p_full, rag_chunks)
+    biomarkers = _build_biomarker_dict(p_full)
     text = generator.generate(biomarkers, rag_chunks)
     wrap_print(text, indent=4)
 
