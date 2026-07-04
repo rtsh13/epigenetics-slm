@@ -114,7 +114,14 @@ def test_train_wires_helpers_and_calls_trainer(tmp_path, monkeypatch):
         def __init__(self, **kwargs):
             self._kwargs = kwargs
 
-    fake_transformers = types.SimpleNamespace(TrainingArguments=_FakeTrainingArguments)
+    class _FakeTrainer:
+        def __init__(self, tokenizer=None, **kwargs):
+            pass
+
+    fake_transformers = types.SimpleNamespace(
+        TrainingArguments=_FakeTrainingArguments,
+        Trainer=_FakeTrainer,
+    )
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
 
     train(

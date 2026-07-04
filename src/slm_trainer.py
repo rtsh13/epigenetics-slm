@@ -62,10 +62,11 @@ def train(
     lr: float = 2e-4,
     max_seq_length: int = 2048,
 ) -> None:
+    import inspect
     from unsloth import FastLanguageModel
-    from trl import SFTTrainer
+    import trl
     from datasets import Dataset
-    from transformers import TrainingArguments
+    from transformers import Trainer, TrainingArguments
     import torch
 
     model, tokenizer = FastLanguageModel.from_pretrained(
@@ -93,19 +94,27 @@ def train(
     if not (torch.cuda.is_available() and torch.cuda.is_bf16_supported()):
         args_dict["bf16"] = False
         args_dict["fp16"] = torch.cuda.is_available()
-    training_args = TrainingArguments(**args_dict)
 
-    trainer_kwargs = dict(
-        model=model,
-        train_dataset=train_ds,
-        dataset_text_field="text",
-        max_seq_length=max_seq_length,
-        args=training_args,
-    )
-    try:
-        trainer = SFTTrainer(processing_class=tokenizer, **trainer_kwargs)
-    except TypeError:
-        trainer = SFTTrainer(tokenizer=tokenizer, **trainer_kwargs)
+    trainer_kwargs = dict(model=model, train_dataset=train_ds)
+
+    sft_config_cls = getattr(trl, "SFTConfig", None)
+    if sft_config_cls is not None:
+        cfg_params = inspect.signature(sft_config_cls).parameters
+        if "dataset_text_field" in cfg_params:
+            args_dict["dataset_text_field"] = "text"
+        if "max_seq_length" in cfg_params:
+            args_dict["max_seq_length"] = max_seq_length
+        trainer_kwargs["args"] = sft_config_cls(**args_dict)
+    else:
+        trainer_kwargs["args"] = TrainingArguments(**args_dict)
+        trainer_kwargs["dataset_text_field"] = "text"
+        trainer_kwargs["max_seq_length"] = max_seq_length
+
+    trainer_init_params = inspect.signature(Trainer.__init__).parameters
+    tokenizer_key = "processing_class" if "processing_class" in trainer_init_params else "tokenizer"
+    trainer_kwargs[tokenizer_key] = tokenizer
+
+    trainer = trl.SFTTrainer(**trainer_kwargs)
     trainer.train()
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
