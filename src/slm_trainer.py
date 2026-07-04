@@ -9,12 +9,7 @@ so importing this module without those dependencies is safe.
 import json
 from pathlib import Path
 
-
-LLAMA_CHAT_TEMPLATE = (
-    "<|begin_of_text|>"
-    "<|start_header_id|>user<|end_header_id|>\n\n{prompt}<|eot_id|>"
-    "<|start_header_id|>assistant<|end_header_id|>\n\n{response}<|eot_id|>"
-)
+from slm_prompt import build_training_text
 
 
 def load_jsonl_dataset(path: str, split: str) -> list[dict]:
@@ -31,10 +26,7 @@ def load_jsonl_dataset(path: str, split: str) -> list[dict]:
 
 
 def format_example(record: dict) -> dict:
-    text = LLAMA_CHAT_TEMPLATE.format(
-        prompt=record["prompt"],
-        response=record["response"],
-    )
+    text = build_training_text(record["prompt"], record["response"])
     return {"text": text}
 
 

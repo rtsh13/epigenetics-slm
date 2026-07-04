@@ -9,6 +9,7 @@ between training and inference.
 
 from pathlib import Path
 
+import slm_prompt
 from slm_prompt import build_prompt
 
 
@@ -62,5 +63,6 @@ class SLMGenerator:
         max_new_tokens: int = 512,
         temperature: float = 0.2,
     ) -> str:
-        prompt = build_prompt(biomarkers, rag_chunks)
+        raw_prompt = build_prompt(biomarkers, rag_chunks)
+        prompt = slm_prompt.build_inference_prompt(raw_prompt)
         return self._call_backend(prompt, max_new_tokens=max_new_tokens, temperature=temperature)

@@ -11,6 +11,20 @@ If you change the prompt format, bump PROMPT_VERSION and retrain.
 
 PROMPT_VERSION = "v1"
 
+LLAMA_USER_HEADER = "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n"
+LLAMA_ASSISTANT_HEADER = "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+LLAMA_EOT = "<|eot_id|>"
+
+
+def build_training_text(prompt: str, response: str) -> str:
+    """Wrap prompt+response in the Llama 3.2 Instruct chat template for training."""
+    return LLAMA_USER_HEADER + prompt + LLAMA_ASSISTANT_HEADER + response + LLAMA_EOT
+
+
+def build_inference_prompt(prompt: str) -> str:
+    """Wrap a prompt in the Llama 3.2 Instruct chat template for inference (no response)."""
+    return LLAMA_USER_HEADER + prompt + LLAMA_ASSISTANT_HEADER
+
 
 def _format_evidence(rag_chunks: list[dict]) -> str:
     lines = []

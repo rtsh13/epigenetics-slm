@@ -7,6 +7,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from slm_generator import SLMGenerator
+import slm_prompt
 from slm_prompt import build_prompt
 
 
@@ -33,9 +34,27 @@ def _stub_generator(monkeypatch, canned="AGING: ok."):
 def test_generate_feeds_backend_the_shared_prompt(monkeypatch):
     gen = _stub_generator(monkeypatch)
     gen.generate(BIOMARKERS, RAG_CHUNKS, max_new_tokens=128, temperature=0.1)
-    expected_prompt = build_prompt(BIOMARKERS, RAG_CHUNKS)
+    raw_prompt = build_prompt(BIOMARKERS, RAG_CHUNKS)
     (prompt_arg,), kwargs = gen._call_backend.call_args
-    assert prompt_arg == expected_prompt, "prompt fed to backend must be byte-identical to slm_prompt.build_prompt(...)"
+    assert prompt_arg.startswith(slm_prompt.LLAMA_USER_HEADER), (
+        "backend prompt must begin with LLAMA_USER_HEADER"
+    )
+    assert prompt_arg.endswith(slm_prompt.LLAMA_ASSISTANT_HEADER), (
+        "backend prompt must end with LLAMA_ASSISTANT_HEADER (no response yet)"
+    )
+    assert raw_prompt in prompt_arg, (
+        "backend prompt must contain the verbatim build_prompt output"
+    )
+
+
+def test_generate_uses_build_inference_prompt(monkeypatch):
+    gen = _stub_generator(monkeypatch)
+    gen.generate(BIOMARKERS, RAG_CHUNKS, max_new_tokens=128, temperature=0.1)
+    (prompt_arg,), _ = gen._call_backend.call_args
+    expected = slm_prompt.build_inference_prompt(slm_prompt.build_prompt(BIOMARKERS, RAG_CHUNKS))
+    assert prompt_arg == expected, (
+        "backend prompt must equal build_inference_prompt(build_prompt(...))"
+    )
 
 
 def test_generate_returns_backend_output(monkeypatch):
