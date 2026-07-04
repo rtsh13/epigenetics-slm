@@ -48,7 +48,8 @@ def build_training_args(
         "save_strategy": "epoch",
         "report_to": "none",
         "bf16": True,
-        "optim": "paged_adamw_8bit",
+        "optim": "adamw_torch",
+        "max_grad_norm": 0.3,
     }
 
 
