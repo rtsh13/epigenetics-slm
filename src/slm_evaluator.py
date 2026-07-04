@@ -113,6 +113,12 @@ def evaluate_dataset(jsonl_path: str, generator, split: str = "eval") -> dict:
 
     per_record = []
     for rec in records:
+        if "biomarkers" not in rec:
+            raise RuntimeError(
+                f"JSONL record (split={rec.get('split', 'train')}, "
+                f"seqn={rec.get('seqn', '?')}) is missing the 'biomarkers' field. "
+                "Extend the dataset builder (Task 12) to include biomarkers in every record."
+            )
         biomarkers = rec["biomarkers"]
         rag_chunks = rec.get("rag_chunks", [])
         expected = _expected_classifications_from_biomarkers(biomarkers)

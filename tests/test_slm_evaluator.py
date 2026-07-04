@@ -167,3 +167,24 @@ def test_evaluate_dataset_aggregates_per_record(tmp_path):
     assert result["category_coverage_all_rate"] == 1.0
     assert result["classification_match_rate_mean"] == 1.0
     assert result["rouge_l_mean"] == 1.0
+
+
+def test_evaluate_dataset_raises_runtime_error_when_biomarkers_missing(tmp_path):
+    import pytest
+    from slm_evaluator import evaluate_dataset
+
+    rows = [
+        {
+            "seqn": 99, "split": "eval",
+            "prompt": "p", "response": COMPLETE_RESPONSE,
+        },
+    ]
+    ds_path = tmp_path / "d.jsonl"
+    _write_jsonl(ds_path, rows)
+
+    class _Gen:
+        def generate(self, biomarkers, rag_chunks):
+            return COMPLETE_RESPONSE
+
+    with pytest.raises(RuntimeError, match="biomarkers"):
+        evaluate_dataset(str(ds_path), _Gen(), split="eval")
