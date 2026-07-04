@@ -65,6 +65,7 @@ def train(
     from unsloth import FastLanguageModel
     from trl import SFTTrainer
     from datasets import Dataset
+    from transformers import TrainingArguments
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,
@@ -84,10 +85,11 @@ def train(
     records = load_jsonl_dataset(dataset_path, "train")
     train_ds = Dataset.from_list([format_example(r) for r in records])
 
-    args = build_training_args(
+    args_dict = build_training_args(
         output_dir=output_dir, epochs=epochs, batch_size=batch_size,
         grad_accum=grad_accum, lr=lr,
     )
+    training_args = TrainingArguments(**args_dict)
 
     trainer = SFTTrainer(
         model=model,
@@ -95,7 +97,7 @@ def train(
         train_dataset=train_ds,
         dataset_text_field="text",
         max_seq_length=max_seq_length,
-        args=args,
+        args=training_args,
     )
     trainer.train()
     model.save_pretrained(output_dir)

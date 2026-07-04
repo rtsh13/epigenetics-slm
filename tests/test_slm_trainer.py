@@ -110,6 +110,13 @@ def test_train_wires_helpers_and_calls_trainer(tmp_path, monkeypatch):
     )
     monkeypatch.setitem(sys.modules, "datasets", fake_datasets)
 
+    class _FakeTrainingArguments:
+        def __init__(self, **kwargs):
+            self._kwargs = kwargs
+
+    fake_transformers = types.SimpleNamespace(TrainingArguments=_FakeTrainingArguments)
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
     train(
         dataset_path=str(ds_path),
         output_dir=str(tmp_path / "out"),
@@ -121,6 +128,11 @@ def test_train_wires_helpers_and_calls_trainer(tmp_path, monkeypatch):
     trainer_kwargs = calls["trainer_kwargs"]
     assert trainer_kwargs["model"] is fake_model
     assert trainer_kwargs["tokenizer"] is fake_tokenizer
+    training_args = trainer_kwargs["args"]
+    assert isinstance(training_args, _FakeTrainingArguments), (
+        "SFTTrainer must receive a TrainingArguments instance, not a plain dict"
+    )
+    assert training_args._kwargs["num_train_epochs"] == 1
     train_dataset = trainer_kwargs["train_dataset"]
     assert len(train_dataset) == 1
     assert train_dataset[0]["text"].startswith("<|begin_of_text|>")
