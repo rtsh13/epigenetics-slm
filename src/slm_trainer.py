@@ -95,14 +95,17 @@ def train(
         args_dict["fp16"] = torch.cuda.is_available()
     training_args = TrainingArguments(**args_dict)
 
-    trainer = SFTTrainer(
+    trainer_kwargs = dict(
         model=model,
-        tokenizer=tokenizer,
         train_dataset=train_ds,
         dataset_text_field="text",
         max_seq_length=max_seq_length,
         args=training_args,
     )
+    try:
+        trainer = SFTTrainer(processing_class=tokenizer, **trainer_kwargs)
+    except TypeError:
+        trainer = SFTTrainer(tokenizer=tokenizer, **trainer_kwargs)
     trainer.train()
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)

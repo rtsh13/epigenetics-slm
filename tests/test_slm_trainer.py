@@ -127,7 +127,8 @@ def test_train_wires_helpers_and_calls_trainer(tmp_path, monkeypatch):
     assert calls["train_called"] is True
     trainer_kwargs = calls["trainer_kwargs"]
     assert trainer_kwargs["model"] is fake_model
-    assert trainer_kwargs["tokenizer"] is fake_tokenizer
+    tokenizer_arg = trainer_kwargs.get("tokenizer") or trainer_kwargs.get("processing_class")
+    assert tokenizer_arg is fake_tokenizer
     training_args = trainer_kwargs["args"]
     assert isinstance(training_args, _FakeTrainingArguments), (
         "SFTTrainer must receive a TrainingArguments instance, not a plain dict"
