@@ -1,3 +1,8 @@
+import os
+os.environ["USE_TF"] = "0"
+os.environ["USE_TORCH"] = "1"
+os.environ["UNSLOTH_ALLOW_TRANSFORMERS5"] = "1"
+
 """
 Colab entrypoint for QLoRA fine-tuning.
 
