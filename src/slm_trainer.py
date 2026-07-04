@@ -67,7 +67,7 @@ def train(
     from unsloth import FastLanguageModel
     import trl
     from datasets import Dataset
-    from transformers import Trainer, TrainingArguments
+    from transformers import TrainingArguments
     import torch
 
     bf16_ok = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
@@ -117,11 +117,10 @@ def train(
         trainer_kwargs["dataset_text_field"] = "text"
         trainer_kwargs["max_seq_length"] = max_seq_length
 
-    trainer_init_params = inspect.signature(trl.SFTTrainer.__init__).parameters
-    tokenizer_key = "processing_class" if "processing_class" in trainer_init_params else "tokenizer"
-    trainer_kwargs[tokenizer_key] = tokenizer
-
-    trainer = trl.SFTTrainer(**trainer_kwargs)
+    try:
+        trainer = trl.SFTTrainer(**trainer_kwargs, tokenizer=tokenizer)
+    except TypeError:
+        trainer = trl.SFTTrainer(**trainer_kwargs, processing_class=tokenizer)
     trainer.train()
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
