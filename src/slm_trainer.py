@@ -88,6 +88,7 @@ def train(
                         "gate_proj", "up_proj", "down_proj"],
         use_gradient_checkpointing=True,
     )
+    print({n: p.dtype for n, p in model.named_parameters() if p.requires_grad}.popitem())
 
     records = load_jsonl_dataset(dataset_path, "train")
     train_ds = Dataset.from_list([format_example(r) for r in records])
