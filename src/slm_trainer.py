@@ -69,16 +69,20 @@ def train(
     from transformers import Trainer, TrainingArguments
     import torch
 
+    bf16_ok = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+    compute_dtype = torch.bfloat16 if bf16_ok else torch.float16
+
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,
         max_seq_length=max_seq_length,
+        dtype=compute_dtype,
         load_in_4bit=True,
     )
     model = FastLanguageModel.get_peft_model(
         model,
         r=16,
         lora_alpha=32,
-        lora_dropout=0.05,
+        lora_dropout=0,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
                         "gate_proj", "up_proj", "down_proj"],
         use_gradient_checkpointing=True,
@@ -91,9 +95,8 @@ def train(
         output_dir=output_dir, epochs=epochs, batch_size=batch_size,
         grad_accum=grad_accum, lr=lr,
     )
-    if not (torch.cuda.is_available() and torch.cuda.is_bf16_supported()):
-        args_dict["bf16"] = False
-        args_dict["fp16"] = torch.cuda.is_available()
+    args_dict["bf16"] = bf16_ok
+    args_dict["fp16"] = not bf16_ok and torch.cuda.is_available()
 
     trainer_kwargs = dict(model=model, train_dataset=train_ds)
 
