@@ -66,6 +66,7 @@ def train(
     from trl import SFTTrainer
     from datasets import Dataset
     from transformers import TrainingArguments
+    import torch
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=base_model,
@@ -89,6 +90,9 @@ def train(
         output_dir=output_dir, epochs=epochs, batch_size=batch_size,
         grad_accum=grad_accum, lr=lr,
     )
+    if not (torch.cuda.is_available() and torch.cuda.is_bf16_supported()):
+        args_dict["bf16"] = False
+        args_dict["fp16"] = torch.cuda.is_available()
     training_args = TrainingArguments(**args_dict)
 
     trainer = SFTTrainer(
