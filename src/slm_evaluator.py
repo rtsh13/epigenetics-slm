@@ -8,6 +8,7 @@ Metrics:
 - rouge_l: longest-common-subsequence F1 against the reference response.
 """
 
+import json as _json
 import re
 
 
@@ -81,4 +82,59 @@ def evaluate_generation(
         "classification_matches": matches,
         "classification_match_rate": match_rate,
         "rouge_l": rouge_l(reference, generated),
+    }
+
+
+def _expected_classifications_from_biomarkers(biomarkers: dict) -> dict:
+    from biomarker_classifier import (
+        classify_aging, classify_hba1c, classify_nlr, classify_sleep,
+    )
+    return {
+        "hba1c": classify_hba1c(float(biomarkers["hba1c"])),
+        "nlr": classify_nlr(float(biomarkers["nlr"])),
+        "aging": classify_aging(float(biomarkers["cosinorage_advance"])),
+        "sleep": classify_sleep(
+            float(biomarkers["tst_minutes"]),
+            float(biomarkers["sri"]),
+        ),
+    }
+
+
+def evaluate_dataset(jsonl_path: str, generator, split: str = "eval") -> dict:
+    records = []
+    with open(jsonl_path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = _json.loads(line)
+            if rec.get("split", "train") == split:
+                records.append(rec)
+
+    per_record = []
+    for rec in records:
+        biomarkers = rec["biomarkers"]
+        rag_chunks = rec.get("rag_chunks", [])
+        expected = _expected_classifications_from_biomarkers(biomarkers)
+        generated = generator.generate(biomarkers, rag_chunks)
+        per_record.append(evaluate_generation(
+            generated=generated,
+            reference=rec["response"],
+            expected_classifications=expected,
+        ))
+
+    n = len(per_record)
+    if n == 0:
+        return {"n_records": 0}
+
+    coverage_all = sum(1 for r in per_record if r["category_coverage_all"]) / n
+    match_rate = sum(r["classification_match_rate"] for r in per_record) / n
+    rouge_mean = sum(r["rouge_l"] for r in per_record) / n
+
+    return {
+        "n_records": n,
+        "category_coverage_all_rate": coverage_all,
+        "classification_match_rate_mean": match_rate,
+        "rouge_l_mean": rouge_mean,
+        "per_record": per_record,
     }

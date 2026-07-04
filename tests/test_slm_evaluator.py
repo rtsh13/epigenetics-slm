@@ -1,3 +1,4 @@
+import json
 import sys
 from pathlib import Path
 
@@ -88,3 +89,45 @@ def test_evaluate_generation_aggregates():
     assert result["category_coverage_all"] is True
     assert result["classification_match_rate"] == 1.0
     assert result["rouge_l"] == 1.0
+
+
+def _write_jsonl(path, rows):
+    with open(path, "w") as f:
+        for r in rows:
+            f.write(json.dumps(r) + "\n")
+
+
+def test_evaluate_dataset_aggregates_per_record(tmp_path):
+    from slm_evaluator import evaluate_dataset
+
+    biomarkers_ok = {
+        "age": 71, "sex": "Female", "hba1c": 5.8, "nlr": 4.2, "wbc": 7.1,
+        "cosinorage_advance": 2.4, "is_value": 0.42, "iv_value": 0.71,
+        "ra_value": 0.74, "tst_minutes": 300.0, "sri": 40.0,
+    }
+    rows = [
+        {
+            "seqn": 1, "split": "eval",
+            "prompt": "p", "response": COMPLETE_RESPONSE,
+            "biomarkers": biomarkers_ok,
+            "rag_chunks": [],
+        },
+        {
+            "seqn": 2, "split": "train",
+            "prompt": "p", "response": COMPLETE_RESPONSE,
+            "biomarkers": biomarkers_ok,
+            "rag_chunks": [],
+        },
+    ]
+    ds_path = tmp_path / "d.jsonl"
+    _write_jsonl(ds_path, rows)
+
+    class _Gen:
+        def generate(self, biomarkers, rag_chunks):
+            return COMPLETE_RESPONSE
+
+    result = evaluate_dataset(str(ds_path), _Gen(), split="eval")
+    assert result["n_records"] == 1
+    assert result["category_coverage_all_rate"] == 1.0
+    assert result["classification_match_rate_mean"] == 1.0
+    assert result["rouge_l_mean"] == 1.0
