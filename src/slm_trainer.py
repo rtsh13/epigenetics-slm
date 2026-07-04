@@ -117,7 +117,7 @@ def train(
         trainer_kwargs["dataset_text_field"] = "text"
         trainer_kwargs["max_seq_length"] = max_seq_length
 
-    trainer_init_params = inspect.signature(Trainer.__init__).parameters
+    trainer_init_params = inspect.signature(trl.SFTTrainer.__init__).parameters
     tokenizer_key = "processing_class" if "processing_class" in trainer_init_params else "tokenizer"
     trainer_kwargs[tokenizer_key] = tokenizer
 
