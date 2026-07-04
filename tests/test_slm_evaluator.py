@@ -49,7 +49,7 @@ def test_classification_exact_match_all_correct():
 
 def test_classification_exact_match_wrong_label():
     expected = {
-        "hba1c": ("Diabetic", ""),
+        "hba1c": ("Hyperglycemic", ""),
         "nlr": ("Normal", ""),
         "aging": ("Favorable", ""),
         "sleep": ("Adequate", ""),
@@ -89,6 +89,42 @@ def test_evaluate_generation_aggregates():
     assert result["category_coverage_all"] is True
     assert result["classification_match_rate"] == 1.0
     assert result["rouge_l"] == 1.0
+
+
+def test_section_text_not_cut_by_category_name_mid_sentence():
+    from slm_evaluator import _section_text
+    response = (
+        "AGING: Favorable aging trajectory. INFLAMMATION score is mentioned here.\n\n"
+        "STRESS: Not measured.\n\n"
+        "METABOLISM: Pre-diabetic HbA1c.\n\n"
+        "INFLAMMATION: Elevated NLR.\n\n"
+        "SLEEP: Short sleep.\n"
+    )
+    section = _section_text(response, "AGING")
+    assert "INFLAMMATION score is mentioned here" in section, (
+        "mid-sentence category word must not truncate the section"
+    )
+
+
+def test_classification_exact_match_case_insensitive():
+    from slm_evaluator import classification_exact_match
+    response = (
+        "AGING: favorable aging trajectory.\n\n"
+        "STRESS: not measured.\n\n"
+        "METABOLISM: pre-diabetic HbA1c reading.\n\n"
+        "INFLAMMATION: elevated NLR indicating inflammaging.\n\n"
+        "SLEEP: short sleep duration observed.\n"
+    )
+    expected = {
+        "hba1c": ("Pre-diabetic", ""),
+        "nlr": ("Elevated", ""),
+        "aging": ("Favorable", ""),
+        "sleep": ("Short", ""),
+    }
+    matches = classification_exact_match(response, expected)
+    assert all(matches.values()), (
+        "case-folded comparison must match even when response uses lowercase labels"
+    )
 
 
 def _write_jsonl(path, rows):

@@ -27,8 +27,8 @@ def category_coverage(generated: str) -> dict:
 
 
 def _section_text(generated: str, header: str) -> str:
-    pattern = rf"{header}\s*:(.*?)(?=(?:{'|'.join(CATEGORIES)})\s*:|\Z)"
-    m = re.search(pattern, generated, flags=re.DOTALL)
+    pattern = rf"{header}\s*:(.*?)(?=(?:\n|^)(?:{'|'.join(CATEGORIES)})\s*:|\Z)"
+    m = re.search(pattern, generated, flags=re.DOTALL | re.MULTILINE)
     return m.group(1) if m else ""
 
 
@@ -37,7 +37,7 @@ def classification_exact_match(generated: str, expected_classifications: dict) -
     for key, header in _SECTION_KEYS.items():
         expected_label = expected_classifications[key][0]
         section = _section_text(generated, header)
-        matches[key] = expected_label in section
+        matches[key] = expected_label.lower() in section.lower()
     return matches
 
 
