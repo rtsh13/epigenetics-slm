@@ -8,8 +8,9 @@ Metrics:
 - rouge_l: longest-common-subsequence F1 against the reference response.
 """
 
-import json as _json
 import re
+
+from slm_trainer import load_jsonl_dataset
 
 
 CATEGORIES = ("AGING", "STRESS", "METABOLISM", "INFLAMMATION", "SLEEP")
@@ -101,15 +102,7 @@ def _expected_classifications_from_biomarkers(biomarkers: dict) -> dict:
 
 
 def evaluate_dataset(jsonl_path: str, generator, split: str = "eval") -> dict:
-    records = []
-    with open(jsonl_path) as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            rec = _json.loads(line)
-            if rec.get("split", "train") == split:
-                records.append(rec)
+    records = load_jsonl_dataset(jsonl_path, split)
 
     per_record = []
     for rec in records:
