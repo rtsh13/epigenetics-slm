@@ -104,6 +104,8 @@ def train(
             args_dict["dataset_text_field"] = "text"
         if "max_seq_length" in cfg_params:
             args_dict["max_seq_length"] = max_seq_length
+        if "padding_free" in cfg_params:
+            args_dict["padding_free"] = False
         trainer_kwargs["args"] = sft_config_cls(**args_dict)
     else:
         trainer_kwargs["args"] = TrainingArguments(**args_dict)
