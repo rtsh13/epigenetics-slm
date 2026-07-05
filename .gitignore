@@ -9,7 +9,7 @@ data/nhanes_features.parquet
 data/nhanes_features.csv
 data/feature_checkpoint.json
 data/accel_csv/
-data/slm_*.jsonl
+# data/slm_*.jsonl
 /Wearables_Epigenetics_Wellbeing.pdf
 /prd.md
 
