@@ -40,7 +40,9 @@ def convert_to_gguf(
         )
     llama_path = Path(llama_dir)
     convert_script = llama_path / "convert_hf_to_gguf.py"
-    quantize_bin = llama_path / "llama-quantize"
+    quantize_bin = llama_path / "build" / "bin" / "llama-quantize"
+    if not quantize_bin.exists():
+        quantize_bin = llama_path / "llama-quantize"  # fallback: old layout
 
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     fp16_path = str(Path(out_path).with_suffix(".fp16.gguf"))
