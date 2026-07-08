@@ -43,7 +43,13 @@ class SLMGenerator:
 
     def _call_backend(self, prompt: str, max_new_tokens: int, temperature: float) -> str:
         if self._backend_name == "gguf":
-            out = self._model(prompt, max_tokens=max_new_tokens, temperature=temperature, echo=False)
+            out = self._model(
+                prompt,
+                max_tokens=max_new_tokens,
+                temperature=temperature,
+                echo=False,
+                stop=["<|eot_id|>"],
+            )
             return out["choices"][0]["text"]
         tokenizer, model = self._model
         inputs = tokenizer(prompt, return_tensors="pt")
