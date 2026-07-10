@@ -53,3 +53,5 @@ models/
 # Secrets
 .env
 *.key
+eval_output.log
+unsloth_compiled_cache/
